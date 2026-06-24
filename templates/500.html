@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error | India Tourism{% endblock %}
+
+{% block content %}
+<section class="empty-state">
+    <h1>Something went wrong</h1>
+    <p class="muted">The server hit an error while loading this page.</p>
+    <a class="btn btn-primary" href="{{ url_for('home') }}">Return home</a>
+</section>
+{% endblock %}

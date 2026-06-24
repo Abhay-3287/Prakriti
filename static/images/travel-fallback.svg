@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Travel image fallback</title>
+  <desc id="desc">Scenic fallback shown when a destination image cannot load.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#60728c"/>
+      <stop offset="55%" stop-color="#33475f"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f7c66a"/>
+      <stop offset="100%" stop-color="#c06a2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="940" cy="145" r="78" fill="#ffd88a" opacity="0.9"/>
+  <path d="M0 612c118-75 238-97 360-58 77 25 132 22 210-15 111-52 214-56 307-18 66 27 121 21 200-20 53-28 91-38 123-34v333H0z" fill="#1b2537"/>
+  <path d="M170 620l138-210 88 130 86-105 116 158 61-74 110 101z" fill="#334761"/>
+  <path d="M496 666l116-320 122 320z" fill="url(#gold)"/>
+  <rect x="535" y="442" width="48" height="150" rx="8" fill="#182334"/>
+  <rect x="466" y="592" width="184" height="24" rx="12" fill="#ffe4af"/>
+  <path d="M414 676h376" stroke="rgba(255,255,255,0.28)" stroke-width="8" stroke-linecap="round"/>
+  <text x="50%" y="84%" fill="#fff3d3" font-family="Arial, sans-serif" font-size="46" font-weight="700" text-anchor="middle">Destination image loading</text>
+  <text x="50%" y="90%" fill="rgba(255,243,211,0.74)" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">A fallback image is keeping the page clean.</text>
+</svg>

@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}India Tourism{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-top: #51627b;
+            --bg-mid: #1d2a3f;
+            --bg-bottom: #0d1220;
+            --surface: rgba(255, 255, 255, 0.10);
+            --surface-strong: rgba(255, 255, 255, 0.14);
+            --surface-soft: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.15);
+            --text: #f5f1e8;
+            --muted: rgba(245, 241, 232, 0.72);
+            --accent: #f0a33a;
+            --accent-2: #d97a23;
+            --shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+            --success: #58c88c;
+            --danger: #ef7a7a;
+            --warning: #f2c15c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            font-family: "Outfit", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(240, 163, 58, 0.12), transparent 24%),
+                linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 30%, var(--bg-bottom) 100%);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.45), transparent 75%);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(18px);
+            background: rgba(9, 14, 25, 0.38);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-inner,
+        .page {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 0;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .brand::before {
+            content: "I";
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd27a, var(--accent-2));
+            color: #2b1705;
+            box-shadow: 0 8px 20px rgba(240, 163, 58, 0.25);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 0.93rem;
+            padding: 9px 13px;
+            border-radius: 999px;
+            transition: 0.18s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            padding: 34px 0 60px;
+        }
+
+        .hero,
+        .card,
+        .spot-card,
+        .flash,
+        .empty-state,
+        .review-card,
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            backdrop-filter: blur(18px);
+            box-shadow: var(--shadow);
+        }
+
+        .hero,
+        .card,
+        .empty-state,
+        .panel {
+            padding: 28px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.12fr 0.88fr;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        h1, h2, h3 {
+            margin: 0 0 12px;
+        }
+
+        h1, h2 {
+            font-family: "Playfair Display", serif;
+            line-height: 1.02;
+            letter-spacing: -0.03em;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 7vw, 4.4rem);
+        }
+
+        h2 {
+            font-size: clamp(1.9rem, 4vw, 2.9rem);
+        }
+
+        h3 {
+            font-size: 1.06rem;
+        }
+
+        p {
+            margin: 0 0 10px;
+            line-height: 1.7;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            color: #ffcf7d;
+            font-size: 0.77rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .btn,
+        button,
+        input[type="submit"] {
+            appearance: none;
+            border: none;
+            border-radius: 999px;
+            padding: 12px 18px;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .btn:hover,
+        button:hover,
+        input[type="submit"]:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary,
+        button,
+        input[type="submit"] {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #241607;
+            box-shadow: 0 12px 28px rgba(217, 122, 35, 0.24);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .grid.two {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid.three {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .spot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .spot-card {
+            overflow: hidden;
+            transition: transform 0.22s ease, background 0.22s ease;
+        }
+
+        .spot-card:hover {
+            transform: translateY(-6px);
+            background: var(--surface-strong);
+        }
+
+        .spot-card img,
+        .hero img,
+        .detail-image,
+        .feature-image {
+            width: 100%;
+            height: 230px;
+            object-fit: contain;
+            display: block;
+            border-radius: 18px;
+        }
+
+        img.image-fallback {
+            object-fit: cover;
+            background:
+                radial-gradient(circle at top left, rgba(255, 212, 126, 0.16), transparent 30%),
+                linear-gradient(180deg, rgba(49, 71, 100, 0.92), rgba(22, 31, 48, 0.96));
+        }
+
+        .spot-card-body {
+            padding: 18px;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0 14px;
+        }
+
+        .badge {
+            border-radius: 999px;
+            padding: 7px 11px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff2d8;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mini-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .media-tile {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            min-height: 168px;
+            box-shadow: 0 18px 30px rgba(0,0,0,0.18);
+        }
+
+        .media-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .media-tile span {
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(10, 10, 15, 0.45);
+            border: 1px solid rgba(255,255,255,0.16);
+            font-size: 0.8rem;
+        }
+
+        .flash-list {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .flash {
+            padding: 14px 18px;
+        }
+
+        .flash-success { border-left: 5px solid var(--success); }
+        .flash-danger, .flash-error { border-left: 5px solid var(--danger); }
+        .flash-warning { border-left: 5px solid var(--warning); }
+        .flash-info { border-left: 5px solid #7bbdf2; }
+
+        form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(8, 12, 22, 0.26);
+            color: var(--text);
+            font: inherit;
+            transition: 0.18s ease;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(245, 241, 232, 0.45);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: rgba(240, 163, 58, 0.5);
+            box-shadow: 0 0 0 4px rgba(240, 163, 58, 0.12);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .errors {
+            margin-top: 6px;
+            color: #ffb0b0;
+            font-size: 0.9rem;
+        }
+
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 22px;
+        }
+
+        .review-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .review-card {
+            padding: 18px;
+        }
+
+        .empty-state {
+            text-align: center;
+        }
+
+        .footer {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 22px 16px 38px;
+            text-align: center;
+            color: var(--muted);
+            position: relative;
+            z-index: 1;
+        }
+
+        .chatbot-toggle {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 80;
+            width: 78px;
+            height: 78px;
+            padding: 0;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.16);
+            background:
+                radial-gradient(circle at 32% 28%, rgba(255, 248, 226, 0.95), rgba(255, 228, 163, 0.35) 25%, transparent 26%),
+                linear-gradient(160deg, #ffd381 0%, #eea646 52%, #be6425 100%);
+            color: #2e1707;
+            box-shadow: 0 22px 40px rgba(0, 0, 0, 0.32);
+            overflow: hidden;
+        }
+
+        .chatbot-panel {
+            position: fixed;
+            right: 22px;
+            bottom: 92px;
+            z-index: 80;
+            width: min(390px, calc(100vw - 28px));
+            background:
+                radial-gradient(circle at top right, rgba(255, 197, 96, 0.14), transparent 34%),
+                linear-gradient(180deg, rgba(16, 24, 39, 0.97), rgba(9, 13, 23, 0.98));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 28px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.42);
+            overflow: hidden;
+            display: none;
+        }
+
+        .chatbot-panel.is-open {
+            display: block;
+        }
+
+        .chatbot-head {
+            padding: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .chatbot-head strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .chatbot-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 35% 28%, #fff2cf, #ffd67c 26%, transparent 27%),
+                linear-gradient(160deg, #f7c362, #c96a24);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 10px 22px rgba(0,0,0,0.18);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .chatbot-avatar::before {
+            content: "";
+            position: absolute;
+            left: 18px;
+            top: 14px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2f1d11;
+            box-shadow: 0 17px 0 5px #7d3f18;
+        }
+
+        .chatbot-avatar::after {
+            content: "";
+            position: absolute;
+            left: 15px;
+            bottom: 11px;
+            width: 26px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 243, 214, 0.9);
+        }
+
+        .chatbot-toggle-guide {
+            position: absolute;
+            inset: 0;
+        }
+
+        .chatbot-toggle-guide::before {
+            content: "";
+            position: absolute;
+            left: 26px;
+            top: 17px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #2f1d11;
+            box-shadow: 0 21px 0 7px #7c3d17;
+        }
+
+        .chatbot-toggle-guide::after {
+            content: "";
+            position: absolute;
+            left: 21px;
+            bottom: 14px;
+            width: 36px;
+            height: 11px;
+            border-radius: 999px;
+            background: rgba(255, 244, 218, 0.95);
+        }
+
+        .chatbot-persona {
+            display: grid;
+            gap: 3px;
+        }
+
+        .chatbot-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 14px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .chatbot-suggestion {
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+        }
+
+        .chatbot-messages {
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .chatbot-bubble {
+            padding: 11px 13px;
+            border-radius: 16px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            white-space: pre-line;
+        }
+
+        .chatbot-bubble.bot {
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
+            color: var(--text);
+        }
+
+        .chatbot-bubble.user {
+            background: linear-gradient(135deg, rgba(240, 163, 58, 0.95), rgba(217, 122, 35, 0.95));
+            color: #241607;
+            justify-self: end;
+        }
+
+        .chatbot-bubble.loading {
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .chatbot-form {
+            padding: 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+        }
+
+        .chatbot-form input {
+            margin: 0;
+        }
+
+        .chatbot-toggle-badge {
+            position: absolute;
+            left: 50%;
+            bottom: 7px;
+            transform: translateX(-50%);
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(45, 24, 11, 0.82);
+            color: #fff1cf;
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .chatbot-toggle-name {
+            position: absolute;
+            right: 12px;
+            top: 8px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+        }
+
+        @media (max-width: 900px) {
+            .hero,
+            .grid.two,
+            .grid.three,
+            .form-row,
+            .detail-layout,
+            .mini-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a class="brand" href="{{ url_for('home') }}">Incret India</a>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('explore') }}">Explore</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    {% if current_user.is_admin %}
+                        <a href="{{ url_for('admin') }}">Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('profile') }}">Profile</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="page">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-list">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        Tourism portal inspired by cinematic travel layouts
+    </footer>
+
+    <button class="chatbot-toggle" id="chatbotToggle" type="button" aria-label="Open Tara travel guide">
+        <span class="chatbot-toggle-guide" aria-hidden="true"></span>
+        <span class="chatbot-toggle-name">TARA</span>
+        <span class="chatbot-toggle-badge">Guide</span>
+    </button>
+    <div class="chatbot-panel" id="chatbotPanel">
+        <div class="chatbot-head">
+            <div class="chatbot-avatar" aria-hidden="true"></div>
+            <div class="chatbot-persona">
+                <strong>Tara, Your Travel Guide</strong>
+                <span class="muted">Ask Tara for trip ideas, spiritual places, beaches, climbing, or site help.</span>
+            </div>
+        </div>
+        <div class="chatbot-suggestions">
+            <button class="chatbot-suggestion" type="button" data-chat-prompt="Best places in Goa">Best places in Goa</button>
+            <button class="chatbot-suggestion" type="button" data-chat-prompt="Show me places for climbing">Places for climbing</button>
+            <button class="chatbot-suggestion" type="button" data-chat-prompt="Spiritual places in Uttar Pradesh">Spiritual places</button>
+            <button class="chatbot-suggestion" type="button" data-chat-prompt="How does the journey planner work?">Journey planner</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-bubble bot">Hello, I am Tara. I can suggest destinations by mood, budget, state, or travel style and also help with routes, login, and site guidance.</div>
+        </div>
+        <form class="chatbot-form" id="chatbotForm">
+            <input id="chatbotInput" type="text" placeholder="Ask Tara for places, routes, login help, or trip ideas">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    {% block scripts %}{% endblock %}
+    <script>
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotPanel = document.getElementById('chatbotPanel');
+        const chatbotForm = document.getElementById('chatbotForm');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const chatbotSuggestions = document.querySelectorAll('[data-chat-prompt]');
+        const imageFallbackSrc = "{{ url_for('static', filename='images/travel-fallback.svg') }}";
+
+        function bindImageFallbacks(root = document) {
+            root.querySelectorAll('img').forEach((img) => {
+                if (img.dataset.imageBound === '1') {
+                    return;
+                }
+
+                img.dataset.imageBound = '1';
+                img.loading = img.loading || 'lazy';
+                img.decoding = 'async';
+                img.referrerPolicy = img.referrerPolicy || 'no-referrer';
+
+                img.addEventListener('error', () => {
+                    if (img.dataset.fallbackApplied === '1') {
+                        return;
+                    }
+                    img.dataset.fallbackApplied = '1';
+                    img.classList.add('image-fallback');
+                    img.src = imageFallbackSrc;
+                });
+            });
+        }
+
+        function watchDynamicImages() {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType !== 1) {
+                            return;
+                        }
+                        if (node.tagName === 'IMG') {
+                            bindImageFallbacks(node.parentElement || document);
+                            return;
+                        }
+                        bindImageFallbacks(node);
+                    });
+                });
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+
+        function appendChatMessage(role, text) {
+            const bubble = document.createElement('div');
+            bubble.className = `chatbot-bubble ${role}`;
+            bubble.textContent = text;
+            chatbotMessages.appendChild(bubble);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            return bubble;
+        }
+
+        async function sendChatMessage(message) {
+            appendChatMessage('user', message);
+            chatbotInput.value = '';
+            const loadingBubble = appendChatMessage('bot loading', 'Thinking about the best answer for you...');
+
+            try {
+                const response = await fetch('/api/chatbot', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                loadingBubble.remove();
+                appendChatMessage('bot', data.reply || 'Sorry, I could not answer that.');
+            } catch (error) {
+                loadingBubble.remove();
+                appendChatMessage('bot', 'Sorry, I could not answer that right now.');
+            }
+        }
+
+        chatbotToggle.addEventListener('click', () => {
+            chatbotPanel.classList.toggle('is-open');
+        });
+
+        chatbotSuggestions.forEach((button) => {
+            button.addEventListener('click', () => {
+                chatbotPanel.classList.add('is-open');
+                const message = button.dataset.chatPrompt;
+                if (message) {
+                    sendChatMessage(message);
+                }
+            });
+        });
+
+        chatbotForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const message = chatbotInput.value.trim();
+            if (!message) {
+                return;
+            }
+            sendChatMessage(message);
+        });
+
+        bindImageFallbacks();
+        watchDynamicImages();
+    </script>
+</body>
+</html>

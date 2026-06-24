@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Incret India{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="eyebrow">Welcome back</div>
+        <h1>Sign in to continue your journey.</h1>
+        <p class="muted">Access saved places, reviews, and the admin portal with the same premium look as the rest of the site.</p>
+    </div>
+    <div class="card" style="margin:0;">
+        <h3>Login</h3>
+        <form method="post">
+            {{ form.hidden_tag() }}
+            <div>
+                <label for="username">Username</label>
+                {{ form.username(id="username", placeholder="Enter your username") }}
+                {% if form.username.errors %}
+                    <div class="errors">{{ form.username.errors|join(', ') }}</div>
+                {% endif %}
+            </div>
+            <div>
+                <label for="password">Password</label>
+                {{ form.password(id="password", placeholder="Enter your password") }}
+                {% if form.password.errors %}
+                    <div class="errors">{{ form.password.errors|join(', ') }}</div>
+                {% endif %}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+        <p class="muted">No account yet? <a href="{{ url_for('register') }}">Register here</a>.</p>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Register | Incret India{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="eyebrow">Create account</div>
+        <h1>Start your own travel archive.</h1>
+        <p class="muted">Register to save favorites, write reviews, and access a more polished travel experience across every page.</p>
+    </div>
+    <div class="card" style="margin:0;">
+        <h3>Register</h3>
+        <form method="post">
+            {{ form.hidden_tag() }}
+
+            <div class="form-row">
+                <div>
+                    <label for="username">Username</label>
+                    {{ form.username(id="username", placeholder="Choose a username") }}
+                    {% if form.username.errors %}<div class="errors">{{ form.username.errors|join(', ') }}</div>{% endif %}
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    {{ form.email(id="email", placeholder="name@example.com") }}
+                    {% if form.email.errors %}<div class="errors">{{ form.email.errors|join(', ') }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="password">Password</label>
+                    {{ form.password(id="password", placeholder="At least 6 characters") }}
+                    {% if form.password.errors %}<div class="errors">{{ form.password.errors|join(', ') }}</div>{% endif %}
+                </div>
+                <div>
+                    <label for="confirm_password">Confirm password</label>
+                    {{ form.confirm_password(id="confirm_password", placeholder="Repeat your password") }}
+                    {% if form.confirm_password.errors %}<div class="errors">{{ form.confirm_password.errors|join(', ') }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="name">Full name</label>
+                    {{ form.name(id="name", placeholder="Your full name") }}
+                    {% if form.name.errors %}<div class="errors">{{ form.name.errors|join(', ') }}</div>{% endif %}
+                </div>
+                <div>
+                    <label for="contact">Contact</label>
+                    {{ form.contact(id="contact", placeholder="+91 9876543210") }}
+                    {% if form.contact.errors %}<div class="errors">{{ form.contact.errors|join(', ') }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="language">Preferred language</label>
+                    {{ form.language(id="language") }}
+                    {% if form.language.errors %}<div class="errors">{{ form.language.errors|join(', ') }}</div>{% endif %}
+                </div>
+                <div>
+                    <label for="state">Home state or union territory</label>
+                    {{ form.state(id="state") }}
+                    {% if form.state.errors %}<div class="errors">{{ form.state.errors|join(', ') }}</div>{% endif %}
+                </div>
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+        <p class="muted">Already registered? <a href="{{ url_for('login') }}">Sign in</a>.</p>
+    </div>
+</section>
+{% endblock %}

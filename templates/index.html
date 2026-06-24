@@ -1,0 +1,451 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Incret India{% endblock %}
+
+{% block head %}
+<style>
+    .unesco-showcase {
+        position: relative;
+        min-height: 420px;
+        padding-bottom: 22px;
+    }
+
+    .unesco-card {
+        position: absolute;
+        inset: 0 0 28px 0;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        overflow: hidden;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(70px) scale(0.92);
+        transition: transform 0.7s ease, opacity 0.7s ease;
+        pointer-events: none;
+        will-change: transform, opacity;
+    }
+
+    .unesco-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+
+    .unesco-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 35%, rgba(8, 10, 18, 0.88) 100%);
+    }
+
+    .unesco-copy {
+        position: relative;
+        z-index: 1;
+        padding: 24px 22px 24px;
+        background: linear-gradient(180deg, rgba(7, 10, 18, 0.08), rgba(7, 10, 18, 0.97));
+        min-height: 138px;
+    }
+
+    .unesco-copy strong {
+        display: block;
+        font-size: 1.55rem;
+        line-height: 1.05;
+        margin-bottom: 8px;
+        color: #fffaf0;
+        text-shadow: 0 6px 22px rgba(0, 0, 0, 0.65);
+        position: relative;
+        z-index: 2;
+    }
+
+    .unesco-copy span {
+        color: rgba(255, 244, 220, 0.96);
+        font-size: 1rem;
+        font-weight: 500;
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+        display: block;
+        position: relative;
+        z-index: 2;
+    }
+
+    .unesco-copy small {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 10px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #ffd694;
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        position: relative;
+        z-index: 2;
+    }
+
+    .unesco-card.is-active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0) scale(1);
+        z-index: 3;
+    }
+
+    .unesco-card.is-next {
+        opacity: 0.28;
+        visibility: visible;
+        transform: translateX(138px) translateY(24px) scale(0.9);
+        z-index: 2;
+    }
+
+    .unesco-card.is-last {
+        opacity: 0.12;
+        visibility: visible;
+        transform: translateX(220px) translateY(40px) scale(0.84);
+        z-index: 1;
+    }
+
+    .unesco-card.is-active img {
+        filter: none;
+    }
+
+    .unesco-card.is-next img,
+    .unesco-card.is-last img {
+        filter: saturate(0.82) brightness(0.82);
+    }
+
+    .unesco-card:not(.is-active) .unesco-copy strong,
+    .unesco-card:not(.is-active) .unesco-copy span,
+    .unesco-card:not(.is-active) .unesco-copy small {
+        opacity: 0;
+    }
+
+    .unesco-dots {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 0;
+        z-index: 4;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .unesco-dot {
+        appearance: none;
+        padding: 0;
+        min-width: 0;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        transition: 0.25s ease;
+        cursor: pointer;
+        box-shadow: none;
+    }
+
+    .unesco-dot.is-active {
+        width: 22px;
+        height: 8px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #ffcb73, #f0a33a);
+        border-color: rgba(255, 219, 154, 0.5);
+    }
+
+    .unesco-dot:hover {
+        transform: none;
+        background: rgba(255, 255, 255, 0.34);
+    }
+
+    .journey-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 14px;
+        padding: 13px 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 208, 128, 0.24);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.16);
+        color: #ffd694;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .journey-link:hover {
+        color: #fff0c9;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .journey-image-row {
+        overflow: hidden;
+        margin: 24px 0;
+        border-radius: 18px;
+        mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    }
+
+    .journey-image-track {
+        display: flex;
+        gap: 16px;
+        width: max-content;
+        animation: journeySlideRight 34s linear infinite;
+    }
+
+    .journey-image-row img {
+        width: 220px;
+        height: 170px;
+        object-fit: cover;
+        display: block;
+        flex: 0 0 auto;
+        border-radius: 18px;
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.22);
+    }
+
+    .journey-image-row:hover .journey-image-track {
+        animation-play-state: paused;
+    }
+
+    @keyframes journeySlideRight {
+        from {
+            transform: translateX(-50%);
+        }
+
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    @media (max-width: 900px) {
+        .unesco-showcase {
+            min-height: 320px;
+        }
+
+        .journey-image-track {
+            gap: 12px;
+        }
+
+        .journey-image-row img {
+            width: 170px;
+            height: 135px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="eyebrow">Discover beautiful India</div>
+        <h1> Prakriti</h1>
+        <br>
+        <h2>Nature Awaits, Adventure Begins.</h2>
+
+        <p class="muted">If what you seek, seek high to serve. Browse destinations with a richer cinematic look inspired by luxury travel landing pages.</p>
+        <div class="actions">
+            <a class="btn btn-primary" href="{{ url_for('explore') }}">Let's go</a>
+            {% if current_user.is_authenticated %}
+                <a class="btn btn-secondary" href="{{ url_for('dashboard') }}">Dashboard</a>
+            {% else %}
+                <a class="btn btn-secondary" href="{{ url_for('register') }}">Join now</a>
+            {% endif %}
+        </div>
+        <a class="journey-link" href="{{ url_for('journey') }}">Start Your Journey</a>
+    </div>
+
+    <div class="unesco-showcase" id="unescoShowcase">
+        <article class="unesco-card is-active">
+            <img src="{{ url_for('static', filename='images/Ri.png') }}" alt="Ram Mandir" loading="eager">
+            <div class="unesco-copy">
+                <strong>Ram Mandir</strong>
+                <span>Ayodhya, Uttar Pradesh</span>
+                <small>Spiritual Landmark</small>
+            </div>
+        </article>
+        <article class="unesco-card is-next">
+            <img src="{{ url_for('static', filename='images/kashi.jpg') }}"
+                 alt="Kashi Vishwanath"
+                 class="unesco-img"
+                 loading="lazy">
+
+            <div class="unesco-copy">
+                <strong>Kashi Vishwanath</strong>
+                <span>Varanasi, Uttar Pradesh</span>
+                <small>Sacred Temple Corridor</small>
+            </div>
+        </article>
+        <article class="unesco-card is-last">
+            <img src="{{ url_for('static', filename='images/h.jpg') }}" alt="Hampi" loading="lazy">
+            <div class="unesco-copy">
+                <strong>Hampi</strong>
+                <span>Karnataka</span>
+                <small>UNESCO World Heritage Site</small>
+            </div>
+        </article>
+        <article class="unesco-card">
+            <img src="{{ url_for('static', filename='images/goll.png') }}" alt="golden temple" loading="lazy">
+            <div class="unesco-copy">
+                <strong>Golden Temple</strong>
+                <span>Amritsar, Punjab</span>
+                <small>Sikh Spiritual Center</small>
+            </div>
+        </article>
+        <article class="unesco-card">
+            <img src="{{ url_for('static', filename='images/ko.jpg') }}" alt="Konark Sun Temple" loading="lazy">
+            <div class="unesco-copy">
+                <strong>Konark Sun Temple</strong>
+                <span>Odisha</span>
+                <small>UNESCO World Heritage Site</small>
+            </div>
+        </article>
+        <article class="unesco-card">
+            <img src="{{ url_for('static', filename='images/Taj Mahal.jpg') }}" alt="Taj Mahal" loading="lazy">
+            <div class="unesco-copy">
+                <strong>Taj Mahal</strong>
+                <span>Agra, Uttar Pradesh</span>
+                <small>UNESCO World Heritage Site</small>
+            </div>
+        </article>
+        <article class="unesco-card">
+            <img src="{{ url_for('static', filename='images/mi.jpg') }}" alt="Meenakshi Temple" loading="lazy">
+            <div class="unesco-copy">
+                <strong>Meenakshi Temple</strong>
+                <span>Madurai, Tamil Nadu</span>
+                <small>Ancient Hindu Temple</small>
+            </div>
+        </article>
+        <article class="unesco-card">
+            <img src="{{ url_for('static', filename='images/ko.jpg') }}" alt="Khajuraho Temples" loading="lazy">
+            <div class="unesco-copy">
+                <strong>Khajuraho Temples</strong>
+                <span>Madhya Pradesh</span>
+                <small>UNESCO World Heritage Site</small>
+            </div>
+        </article>
+        <div class="unesco-dots" id="unescoDots"></div>
+    </div>
+</section>
+
+<section class="journey-image-row" aria-label="Featured travel images">
+    <div class="journey-image-track">
+        <img src="{{ url_for('static', filename='images/kk.jpg') }}" alt="Taj Mahal">
+        <img src="{{ url_for('static', filename='images/vv.jpg') }}" alt="Konark Temple">
+        <img src="{{ url_for('static', filename='images/hh.jpg') }}" alt="Varanasi">
+        <img src="{{ url_for('static', filename='images/ss.jpg') }}" alt="Meenakshi Temple">
+        <img src="{{ url_for('static', filename='images/gold.jpg') }}" alt="Golden Temple">
+        <img src="{{ url_for('static', filename='images/mahadev.jpg') }}" alt="Mahadev">
+        <img src="{{ url_for('static', filename='images/ram ji.jpg') }}" alt="Ram Temple">
+        <img src="{{ url_for('static', filename='images/h.jpg') }}" alt="Heritage Site">
+        <img src="{{ url_for('static', filename='images/kk.jpg') }}" alt="" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/vv.jpg') }}" alt="" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/hh.jpg') }}" alt="" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/ss.jpg') }}" alt="" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/gold.jpg') }}" alt="" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/mahadev.jpg') }}" alt="" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/ram ji.jpg') }}" alt="" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/h.jpg') }}" alt="" aria-hidden="true">
+    </div>
+</section>
+
+<section class="grid two" style="margin-top: 24px;">
+    <article class="card">
+        <div class="eyebrow">Traveler mode</div>
+        <h2>Explore India with a darker, richer travel vibe.</h2>
+        <p class="muted">The whole site now follows the same moody editorial style as your reference, from hero areas to cards and forms.</p>
+        <div class="actions">
+            <a class="btn btn-primary" href="{{ url_for('explore') }}">Explore places</a>
+        </div>
+    </article>
+    <article class="card">
+        <div class="eyebrow">Signature journeys</div>
+        <h2>Chase sunrise ghats, desert nights, and temple trails.</h2>
+        <p class="muted">Move from spiritual cities to royal forts and dramatic coastlines with handpicked routes that feel memorable before the trip even begins.</p>
+        <div class="actions">
+            <a class="btn btn-primary" href="{{ url_for('journey') }}">Plan a route</a>
+            <a class="btn btn-secondary" href="{{ url_for('explore') }}">See top places</a>
+        </div>
+    </article>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const unescoCards = Array.from(document.querySelectorAll('#unescoShowcase .unesco-card'));
+    const unescoDotsContainer = document.getElementById('unescoDots');
+    let unescoDots = [];
+    let unescoIndex = 0;
+    let unescoTimer = null;
+
+    function paintUnescoCards(targetIndex = 0) {
+        if (!unescoCards.length) {
+            return;
+        }
+
+        unescoIndex = (targetIndex + unescoCards.length) % unescoCards.length;
+
+        unescoCards.forEach((card, index) => {
+            card.classList.remove('is-active', 'is-next', 'is-last');
+
+            const offset = (index - unescoIndex + unescoCards.length) % unescoCards.length;
+            if (offset === 0) {
+                card.classList.add('is-active');
+            } else if (offset === 1) {
+                card.classList.add('is-next');
+            } else if (offset === 2) {
+                card.classList.add('is-last');
+            }
+        });
+
+        unescoDots.forEach((dot, index) => {
+            dot.classList.toggle('is-active', index === unescoIndex);
+        });
+    }
+
+    function restartUnescoRotation() {
+        if (unescoTimer) {
+            clearInterval(unescoTimer);
+        }
+
+        if (unescoCards.length < 2) {
+            return;
+        }
+
+        unescoTimer = setInterval(() => {
+            paintUnescoCards(unescoIndex + 1);
+        }, 3600);
+    }
+
+    if (unescoDotsContainer && unescoCards.length) {
+        unescoDotsContainer.innerHTML = '';
+        unescoCards.forEach((card, index) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'unesco-dot';
+            dot.setAttribute('aria-label', `Show slide ${index + 1}`);
+            dot.addEventListener('click', () => {
+                paintUnescoCards(index);
+                restartUnescoRotation();
+            });
+            unescoDotsContainer.appendChild(dot);
+        });
+        unescoDots = Array.from(unescoDotsContainer.querySelectorAll('.unesco-dot'));
+    }
+
+    paintUnescoCards(0);
+    restartUnescoRotation();
+
+    document.getElementById('unescoShowcase')?.addEventListener('mouseenter', () => {
+        if (unescoTimer) {
+            clearInterval(unescoTimer);
+        }
+    });
+
+    document.getElementById('unescoShowcase')?.addEventListener('mouseleave', () => {
+        restartUnescoRotation();
+    });
+</script>
+{% endblock %}

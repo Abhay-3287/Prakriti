@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Incret India{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="eyebrow">Personal board</div>
+        <h1>{{ current_user.name or current_user.username }}'s travel world</h1>
+        <p class="muted">Your dashboard keeps favorite places, profile details, and the fastest route back into discovery.</p>
+        <div class="actions">
+            <a class="btn btn-primary" href="{{ url_for('explore') }}">Explore destinations</a>
+            <a class="btn btn-secondary" href="{{ url_for('profile') }}">View profile</a>
+            {% if current_user.is_admin %}
+                <a class="btn btn-secondary" href="{{ url_for('admin') }}">Open admin panel</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card" style="box-shadow:none; margin:0;">
+        <div class="eyebrow">Snapshot</div>
+        <p><strong>Username:</strong> {{ current_user.username }}</p>
+        <p><strong>Email:</strong> {{ current_user.email }}</p>
+        <p><strong>Language:</strong> {{ current_user.language|title }}</p>
+        <p><strong>State:</strong> {{ get_state_label(current_user.state) }}</p>
+        <p><strong>Favorites:</strong> {{ favorites|length }}</p>
+    </div>
+</section>
+
+<section class="card" style="margin-bottom: 24px;">
+    <div class="eyebrow">Quick search</div>
+    <h2>Find a place</h2>
+    <form action="{{ url_for('search') }}" method="post" style="grid-template-columns: 1fr auto; align-items: end;">
+        <div>
+            <label for="city">City, state, or attraction</label>
+            <input id="city" name="city" placeholder="Goa, Jaipur, Taj Mahal" required>
+        </div>
+        <button type="submit">Search</button>
+    </form>
+</section>
+
+<section>
+    <div class="eyebrow">Saved places</div>
+    <h2>Favorites</h2>
+    {% if favorites %}
+        <div class="spot-grid">
+            {% for spot in favorites %}
+                <article class="spot-card">
+                    <img src="{{ spot.image_url }}" alt="{{ spot.name }}">
+                    <div class="spot-card-body">
+                        <h3>{{ spot.name }}</h3>
+                        <div class="meta">
+                            <span class="badge">{{ get_state_label(spot.state) }}</span>
+                            <span class="badge">{{ spot.category|replace('_', ' ')|title }}</span>
+                            <span class="badge">{{ "%.1f"|format(get_average_rating(spot)) }} / 5</span>
+                        </div>
+                        <p class="muted">{{ spot.description[:120] }}{% if spot.description|length > 120 %}...{% endif %}</p>
+                        <a class="btn btn-secondary" href="{{ url_for('spot_detail', spot_id=spot.id) }}">Open details</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>No favorites yet</h3>
+            <p class="muted">Open a destination and save it to start building your collection.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

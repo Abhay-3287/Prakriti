@@ -1,0 +1,356 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Start Your Journey | Incret India{% endblock %}
+
+{% block head %}
+<style>
+    .journey-form {
+        display: grid;
+        gap: 16px;
+    }
+
+    .journey-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .journey-option-card.is-preferred {
+        border-color: rgba(240, 163, 58, 0.8);
+        box-shadow: 0 18px 34px rgba(240, 163, 58, 0.16);
+    }
+
+    .journey-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(240, 163, 58, 0.14);
+        border: 1px solid rgba(240, 163, 58, 0.34);
+        color: var(--accent);
+        font-size: 0.85rem;
+    }
+
+    .booking-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 14px;
+        width: 100%;
+        text-decoration: none;
+    }
+
+    .budget-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 24px;
+        margin-top: 24px;
+    }
+
+    .budget-chip-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .budget-chip {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: left;
+        color: inherit;
+    }
+
+    button.budget-chip {
+        cursor: pointer;
+        transition: transform 0.24s ease, background 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+    }
+
+    button.budget-chip:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(240, 163, 58, 0.34);
+        box-shadow: 0 16px 28px rgba(0, 0, 0, 0.2);
+    }
+
+    .budget-chip strong,
+    .budget-allocation strong {
+        display: block;
+        color: #fff7e7;
+        margin-bottom: 6px;
+    }
+
+    .budget-allocation {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .budget-allocation-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .budget-spot-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 18px;
+    }
+
+    .budget-spot-card {
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .budget-spot-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .budget-spot-copy {
+        padding: 18px;
+    }
+
+    @media (max-width: 900px) {
+        .journey-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .budget-layout,
+        .budget-chip-grid,
+        .budget-spot-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="eyebrow">Trip planner</div>
+        <h1>Start Your Journey</h1>
+        <p class="muted">Choose your starting point and destination to see road, railway, and aeroplane travel options with time, then continue to a booking option.</p>
+    </div>
+    <div class="card" style="margin:0;">
+        <form action="{{ url_for('journey') }}" method="post" class="journey-form">
+            <div class="journey-form-grid">
+                <div>
+                    <label for="starting_point">Starting point</label>
+                    <input id="starting_point" name="starting_point" placeholder="Enter your city or state" value="{{ start_point or '' }}" required>
+                </div>
+                <div>
+                    <label for="city">Destination point</label>
+                    <input id="city" name="city" placeholder="Enter destination place" value="{{ destination_point or '' }}" required>
+                </div>
+            </div>
+            <div class="journey-form-grid">
+                <div>
+                    <label for="transport_mode">Transport option for booking</label>
+                    <select id="transport_mode" name="transport_mode">
+                        <option value="any" {% if (transport_mode or 'any') == 'any' %}selected{% endif %}>Any available option</option>
+                        <option value="roadways" {% if transport_mode == 'roadways' %}selected{% endif %}>Roadways</option>
+                        <option value="railways" {% if transport_mode == 'railways' %}selected{% endif %}>Railways</option>
+                        <option value="aeroplane" {% if transport_mode == 'aeroplane' %}selected{% endif %}>Aeroplane</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="journey_date">Journey date</label>
+                    <input id="journey_date" name="journey_date" type="date" value="{{ journey_date or '' }}">
+                </div>
+            </div>
+            <div class="journey-form-grid">
+                <div>
+                    <label for="passengers">Passengers</label>
+                    <input id="passengers" name="passengers" type="number" min="1" max="12" value="{{ passengers or '1' }}">
+                </div>
+                <div class="muted" style="align-self:end;">
+                    Select your preferred transport and then use the matching booking button in the results below.
+                </div>
+            </div>
+            <button type="submit">Show routes</button>
+        </form>
+    </div>
+</section>
+
+<section class="budget-layout">
+    <article class="card">
+        <div class="eyebrow">Budget planner</div>
+        <h2>Not sure where to go yet?</h2>
+        <p class="muted">Tell us your budget and travel mood, and we will shape a simple trip idea that fits your money better. Example: if you have Rs. 10,000, we will suggest a short getaway, likely transport, and places that suit it.</p>
+
+        <form action="{{ url_for('journey') }}" method="post" class="journey-form" style="margin-top: 18px;" id="budgetTripForm">
+            <input type="hidden" name="action" value="budget_trip">
+            <div class="journey-form-grid">
+                <div>
+                    <label for="budget_amount">Total budget</label>
+                    <input id="budget_amount" name="budget_amount" type="number" min="1000" step="500" placeholder="10000" value="{{ budget_amount or '' }}" required>
+                </div>
+                <div>
+                    <label for="budget_travelers">Travelers</label>
+                    <input id="budget_travelers" name="budget_travelers" type="number" min="1" max="12" value="{{ budget_travelers or '1' }}">
+                </div>
+            </div>
+            <div class="journey-form-grid">
+                <div>
+                    <label for="budget_origin">Starting city</label>
+                    <input id="budget_origin" name="budget_origin" placeholder="Delhi, Jaipur, Lucknow..." value="{{ budget_origin or '' }}">
+                </div>
+                <div>
+                    <label for="budget_style">Trip style</label>
+                    <select id="budget_style" name="budget_style">
+                        <option value="any" {% if (budget_style or 'any') == 'any' %}selected{% endif %}>Anything interesting</option>
+                        <option value="spiritual" {% if budget_style == 'spiritual' %}selected{% endif %}>Spiritual</option>
+                        <option value="heritage" {% if budget_style == 'heritage' %}selected{% endif %}>Heritage</option>
+                        <option value="nature" {% if budget_style == 'nature' %}selected{% endif %}>Nature</option>
+                        <option value="beach" {% if budget_style == 'beach' %}selected{% endif %}>Beach</option>
+                        <option value="adventure" {% if budget_style == 'adventure' %}selected{% endif %}>Adventure</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit">Plan my trip by budget</button>
+        </form>
+    </article>
+
+    <article class="card">
+        <div class="eyebrow">How it helps</div>
+        <h2>Quick idea before full booking</h2>
+        <p class="muted">This section is for customers who only know their spending limit. Click any budget card below and we will instantly prepare a matching trip idea with places, transport guidance, and spending split.</p>
+        <div class="budget-chip-grid">
+            <button class="budget-chip" type="button" data-budget="5500" data-style="nature">
+                <strong>Rs. 5,000 to Rs. 6,000</strong>
+                <span class="muted">Short same-state day trip or overnight plan</span>
+            </button>
+            <button class="budget-chip" type="button" data-budget="10000" data-style="heritage">
+                <strong>Rs. 10,000 to Rs. 12,000</strong>
+                <span class="muted">Strong weekend escape with rail or road travel</span>
+            </button>
+            <button class="budget-chip" type="button" data-budget="18000" data-style="spiritual">
+                <strong>Rs. 15,000 to Rs. 25,000</strong>
+                <span class="muted">Comfortable 2 to 3 day holiday</span>
+            </button>
+            <button class="budget-chip" type="button" data-budget="30000" data-style="adventure">
+                <strong>Above Rs. 25,000</strong>
+                <span class="muted">Flight-friendly multi-day break</span>
+            </button>
+        </div>
+    </article>
+</section>
+
+{% if journey_result %}
+<section class="card" style="margin-bottom: 24px;">
+    <div class="eyebrow">Route summary</div>
+    <h2>{{ journey_result.start }} to {{ journey_result.destination }}</h2>
+    <p class="muted">Direct distance: {{ journey_result.direct_distance }}</p>
+    <p class="muted">Preferred transport: {{ journey_result.preferred_mode }}{% if journey_result.journey_date %} | Journey date: {{ journey_result.journey_date }}{% endif %} | Passengers: {{ journey_result.passengers }}</p>
+</section>
+
+<section class="grid three">
+    {% for option in journey_result.options %}
+        <article class="card journey-option-card {% if option.is_preferred %}is-preferred{% endif %}">
+            <div class="eyebrow">{{ option.mode }}</div>
+            <h3>{{ option.time }}</h3>
+            <p><strong>Distance:</strong> {{ option.distance }}</p>
+            <p class="muted">{{ option.summary }}</p>
+            <p class="muted">{{ option.note }}</p>
+            {% if option.is_preferred %}
+                <div class="journey-badge">Recommended booking choice</div>
+            {% endif %}
+            <a class="button booking-button" href="{{ option.booking_url }}" target="_blank" rel="noopener noreferrer">{{ option.booking_label }}</a>
+        </article>
+    {% endfor %}
+</section>
+{% endif %}
+
+{% if budget_plan %}
+<section class="card" style="margin-top: 24px;">
+    <div class="eyebrow">Budget trip result</div>
+    <h2>{{ budget_plan.trip_style }} for {{ budget_plan.total_budget }}</h2>
+    <p class="muted">{{ budget_plan.headline }}</p>
+
+    <div class="budget-chip-grid">
+        <div class="budget-chip">
+            <strong>Trip length</strong>
+            <span class="muted">{{ budget_plan.trip_length }}</span>
+        </div>
+        <div class="budget-chip">
+            <strong>Suggested transport</strong>
+            <span class="muted">{{ budget_plan.transport }}</span>
+        </div>
+        <div class="budget-chip">
+            <strong>Travelers</strong>
+            <span class="muted">{{ budget_plan.travelers }}</span>
+        </div>
+        <div class="budget-chip">
+            <strong>Budget per person</strong>
+            <span class="muted">{{ budget_plan.budget_per_person }}</span>
+        </div>
+    </div>
+
+    <div class="budget-allocation">
+        {% for item in budget_plan.allocation %}
+            <div class="budget-allocation-item">
+                <strong>{{ item.label }}</strong>
+                <span>{{ item.amount }}</span>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% if budget_plan.recommended_spots %}
+<section class="budget-spot-grid">
+    {% for spot in budget_plan.recommended_spots %}
+        <article class="card budget-spot-card">
+            <img src="{{ spot.image_url }}" alt="{{ spot.name }}">
+            <div class="budget-spot-copy">
+                <div class="eyebrow">{{ spot.category }}</div>
+                <h3>{{ spot.name }}</h3>
+                <p class="muted">{{ spot.city }}, {{ spot.state }}</p>
+                <p class="muted">{{ spot.description }}</p>
+                <div class="actions" style="margin-top: 14px;">
+                    <a class="btn btn-secondary" href="{{ url_for('spot_detail', spot_id=spot.id) }}">View place</a>
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+</section>
+{% endif %}
+{% endif %}
+
+<script>
+    const budgetTripForm = document.getElementById('budgetTripForm');
+    const budgetAmountInput = document.getElementById('budget_amount');
+    const budgetStyleInput = document.getElementById('budget_style');
+    const budgetPresetButtons = document.querySelectorAll('[data-budget]');
+
+    budgetPresetButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            if (!budgetTripForm || !budgetAmountInput || !budgetStyleInput) {
+                return;
+            }
+
+            budgetAmountInput.value = button.dataset.budget || '';
+            budgetStyleInput.value = button.dataset.style || 'any';
+            if (typeof budgetTripForm.requestSubmit === 'function') {
+                budgetTripForm.requestSubmit();
+            } else {
+                budgetTripForm.submit();
+            }
+        });
+    });
+</script>
+{% endblock %}
+

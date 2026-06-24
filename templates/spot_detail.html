@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{{ spot.name }} | Incret India{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="eyebrow">Destination detail</div>
+        <h1>{{ spot.name }}</h1>
+        <p class="muted">{{ spot.description }}</p>
+        <div class="meta">
+            <span class="badge">{{ get_state_label(spot.state) }}</span>
+            {% if spot.city %}<span class="badge">{{ spot.city }}</span>{% endif %}
+            {% if spot.category %}<span class="badge">{{ spot.category|replace('_', ' ')|title }}</span>{% endif %}
+            <span class="badge">{{ "%.1f"|format(average_rating) }} / 5</span>
+        </div>
+        <div class="actions">
+            <a class="btn btn-secondary" href="{{ url_for('explore') }}">Back to explore</a>
+            {% if current_user.is_authenticated %}
+                <form method="post" action="{{ url_for('add_favorite', spot_id=spot.id) }}" style="display:inline;">
+                    <button type="submit">{{ 'Remove favorite' if is_favorite else 'Add favorite' }}</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    <img class="feature-image" src="{{ spot.image_url }}" alt="{{ spot.name }}">
+</section>
+
+<section class="detail-layout" style="margin-bottom: 24px;">
+    <article class="card">
+        <div class="eyebrow">Story</div>
+        <h2>About this place</h2>
+        <p class="muted">{{ spot.description }}</p>
+    </article>
+
+    <div class="grid">
+        {% if current_user.is_authenticated %}
+            <section class="card">
+                <div class="eyebrow">Your voice</div>
+                <h3>Write or update your review</h3>
+                <form method="post" action="{{ url_for('add_review', spot_id=spot.id) }}">
+                    {{ form.hidden_tag() }}
+                    <div>
+                        <label for="rating">Rating</label>
+                        {{ form.rating(id="rating") }}
+                        {% if form.rating.errors %}<div class="errors">{{ form.rating.errors|join(', ') }}</div>{% endif %}
+                    </div>
+                    <div>
+                        <label for="comment">Comment</label>
+                        {{ form.comment(id="comment", placeholder="Share your experience") }}
+                        {% if form.comment.errors %}<div class="errors">{{ form.comment.errors|join(', ') }}</div>{% endif %}
+                    </div>
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+            </section>
+        {% else %}
+            <section class="card">
+                <div class="eyebrow">Unlock more</div>
+                <h3>Want to save or review this place?</h3>
+                <p class="muted">Login to add favorites and reviews.</p>
+                <a class="btn btn-primary" href="{{ url_for('login') }}">Login</a>
+            </section>
+        {% endif %}
+    </div>
+</section>
+
+<section class="card">
+    <div class="eyebrow">Traveler reviews</div>
+    <h2>Reviews</h2>
+    {% if reviews %}
+        <div class="review-list">
+            {% for review in reviews %}
+                <article class="review-card">
+                    <strong>{{ review.user.name or review.user.username }}</strong>
+                    <div class="meta">
+                        <span class="badge">{{ review.rating }} / 5</span>
+                        <span class="badge">{{ review.created_at.strftime('%d %b %Y') }}</span>
+                    </div>
+                    {% if review.comment %}
+                        <p class="muted">{{ review.comment }}</p>
+                    {% else %}
+                        <p class="muted">No written comment provided.</p>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">No reviews yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

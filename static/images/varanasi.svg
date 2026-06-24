@@ -1,0 +1,44 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="varansiWater" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#20B2AA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#008B8B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="varansiSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFE4E1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky -->
+  <rect width="400" height="150" fill="url(#varansiSky)"/>
+  
+  <!-- Ganges River -->
+  <rect width="400" height="150" y="150" fill="url(#varansiWater)"/>
+  
+  <!-- Ghats (steps) -->
+  <polygon points="0,150 50,160 50,180 0,170" fill="#8B7355"/>
+  <polygon points="50,160 100,165 100,185 50,180" fill="#A0826D"/>
+  <polygon points="100,165 150,160 150,180 100,185" fill="#8B7355"/>
+  <polygon points="150,160 200,155 200,175 150,180" fill="#A0826D"/>
+  <polygon points="200,155 250,160 250,180 200,175" fill="#8B7355"/>
+  <polygon points="250,160 300,165 300,185 250,180" fill="#A0826D"/>
+  <polygon points="300,165 350,170 350,190 300,185" fill="#8B7355"/>
+  <polygon points="350,170 400,175 400,195 350,190" fill="#A0826D"/>
+  
+  <!-- Temples on the ghats -->
+  <rect x="40" y="100" width="35" height="60" fill="#CD853F" stroke="#8B4513" stroke-width="1"/>
+  <polygon points="55,100 45,70 65,100" fill="#8B4513"/>
+  
+  <rect x="180" y="90" width="40" height="70" fill="#CD853F" stroke="#8B4513" stroke-width="1"/>
+  <polygon points="200,90 180,50 220,90" fill="#8B4513"/>
+  
+  <rect x="320" y="105" width="35" height="55" fill="#CD853F" stroke="#8B4513" stroke-width="1"/>
+  <polygon points="335,105 320,75 350,105" fill="#8B4513"/>
+  
+  <!-- Lanterns/spiritual elements -->
+  <circle cx="60" cy="80" r="4" fill="#FFD700"/>
+  <circle cx="200" cy="70" r="4" fill="#FFD700"/>
+  <circle cx="337" cy="85" r="4" fill="#FFD700"/>
+</svg>

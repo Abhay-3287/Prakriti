@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - SignUp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #ff6b6b 0%, #ffa500 15%, #ffd700 30%, #00ff88 45%, #00d4ff 60%, #5b5fff 75%, #ff006e 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .background-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.2;
+            mix-blend-mode: screen;
+        }
+
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #ff006e, #ffb700);
+            top: -150px;
+            left: -150px;
+            animation: float1 25s infinite ease-in-out;
+        }
+
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            bottom: -100px;
+            right: -100px;
+            animation: float2 25s infinite ease-in-out;
+        }
+
+        .blob-3 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            top: 50%;
+            right: 5%;
+            animation: float3 25s infinite ease-in-out;
+        }
+
+        .blob-4 {
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            bottom: 20%;
+            left: 5%;
+            animation: float1 30s infinite ease-in-out;
+        }
+
+        .blob-5 {
+            width: 320px;
+            height: 320px;
+            background: linear-gradient(135deg, #5b5fff, #ff006e);
+            top: 10%;
+            right: 20%;
+            animation: float2 28s infinite ease-in-out;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(60px, 40px) scale(1.15) rotate(120deg); }
+            66% { transform: translate(-40px, 60px) scale(0.9) rotate(240deg); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(-50px, -50px) scale(0.95) rotate(120deg); }
+            66% { transform: translate(50px, -40px) scale(1.1) rotate(240deg); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-40px, 50px) rotate(120deg); }
+            66% { transform: translate(40px, -60px) rotate(240deg); }
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            max-width: 1300px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .info-section {
+            color: white;
+            padding: 40px;
+            animation: slideInLeft 0.8s ease-out;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-section h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+        }
+
+        .info-section p {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            font-weight: 500;
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(10px);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 28px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature:nth-child(1) .feature-icon {
+            background: linear-gradient(135deg, #ff6b6b, #ffb700);
+        }
+
+        .feature:nth-child(2) .feature-icon {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+        }
+
+        .feature:nth-child(3) .feature-icon {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+        }
+
+        .feature:nth-child(4) .feature-icon {
+            background: linear-gradient(135deg, #ffa500, #ff006e);
+        }
+
+        .feature-text h3 {
+            font-size: 17px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-text p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4), 0 0 80px rgba(255, 100, 200, 0.3);
+            animation: slideInRight 0.8s ease-out;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-80px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(80px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .form-header {
+            margin-bottom: 35px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-header h1 {
+            font-size: 36px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+            font-weight: 900;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 2;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 800;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 15px 16px 15px 50px;
+            border: 2.5px solid #ff6b6b;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Arial', sans-serif;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 8px rgba(0, 212, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        .password-strength {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            flex: 1;
+            border-radius: 2px;
+            background: #e8e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 28px 0;
+            font-size: 14px;
+            color: #333;
+            z-index: 2;
+            position: relative;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #ff6b6b;
+        }
+
+        .checkbox-group a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 16px 16px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 25%, #00d4ff 50%, #00ff88 75%, #ff006e 100%);
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            margin-top: 15px;
+            z-index: 2;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 45px rgba(255, 107, 107, 0.5);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b6b, #00d4ff, #00ff88);
+        }
+
+        .divider span {
+            font-size: 13px;
+            color: #ff6b6b;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .social-signup {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-btn {
+            padding: 14px;
+            border: 2.5px solid #ff6b6b;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .social-btn:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .login-link {
+            text-align: center;
+            font-size: 15px;
+            color: #666;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-link a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 800;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            font-size: 14px;
+            color: #ff6b6b;
+            letter-spacing: 0.3px;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .info-section {
+                text-align: center;
+            }
+
+            .info-section h2 {
+                font-size: 40px;
+            }
+
+            .features {
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-container {
+                padding: 20px;
+            }
+
+            .form-container {
+                padding: 30px 24px;
+            }
+
+            .info-section {
+                padding: 20px;
+            }
+
+            .info-section h2 {
+                font-size: 32px;
+            }
+
+            .form-header h1 {
+                font-size: 28px;
+            }
+
+            button[type="submit"] {
+                padding: 14px 14px;
+                font-size: 15px;
+            }
+
+            .social-signup {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .feature-text h3 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+        <div class="blob blob-5"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="info-section">
+            <h2>Join Our Creative Community</h2>
+            <p>Unlock amazing possibilities and start your journey with thousands of creators worldwide.</p>
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <div class="feature-text">
+                        <h3>Super Fast</h3>
+                        <p>Lightning speed performance</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-text">
+                        <h3>Bank Level Security</h3>
+                        <p>Your data is fully protected</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">⭐</div>
+                    <div class="feature-text">
+                        <h3>Premium Features</h3>
+                        <p>Exclusive tools & resources</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🤝</div>
+                    <div class="feature-text">
+                        <h3>Expert Support</h3>
+                        <p>24/7 dedicated assistance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Get Started</h1>
+                <p>Join thousands of happy users today</p>
+            </div>
+
+            <div class="social-signup">
+                <button type="button" class="social-btn">G</button>
+                <button type="button" class="social-btn">⊙</button>
+                <button type="button" class="social-btn">🍎</button>
+            </div>
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <form action="/register" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            placeholder="Choose your username" 
+                            required
+                            minlength="3"
+                            maxlength="20"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">✉️</span>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="Enter your email" 
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔐</span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Create a strong password" 
+                            required
+                            minlength="8"
+                        >
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms" style="margin: 0; text-transform: none; font-weight: 600; color: #333;">
+                        I agree to the <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit">Create My Account</button>
+            </form>
+
+            <div class="divider" style="margin-top: 25px; margin-bottom: 0;"></div>
+
+            <div class="login-link">
+                Already a member? <a href="/login">Sign in now</a>
+            </div>
+
+            <div class="footer">
+                ❤️ Made with love by Manas and Amandeep
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const password = document.getElementById('password');
+        
+        password.addEventListener('input', function() {
+            const strength = this.value.length;
+            const bars = document.querySelectorAll('.strength-bar');
+            bars.forEach((bar, index) => {
+                if (strength > (index * 4)) {
+                    bar.style.background = 'linear-gradient(90deg, #ff6b6b, #ffa500)';
+                } else {
+                    bar.style.background = '#e8e8f0';
+                }
+            });
+        });
+
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Social signup coming soon!');
+            });
+        });
+    </script>
+</body>
+</html>

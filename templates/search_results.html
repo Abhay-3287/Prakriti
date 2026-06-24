@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results | Incret India{% endblock %}
+
+{% block content %}
+<section class="card" style="margin-bottom: 24px;">
+    <div class="eyebrow">Search results</div>
+    <h1>Matches for "{{ city }}"</h1>
+    <p class="muted">Browse the destinations that match your query in the same visual style as the rest of the site.</p>
+    <div class="actions">
+        <a class="btn btn-secondary" href="{{ url_for('explore') }}">Back to explore</a>
+        <a class="btn btn-secondary" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+    </div>
+</section>
+
+{% if spots %}
+    <section class="spot-grid">
+        {% for spot in spots %}
+            <article class="spot-card">
+                <img src="{{ spot.image_url }}" alt="{{ spot.name }}">
+                <div class="spot-card-body">
+                    <h3>{{ spot.name }}</h3>
+                    <div class="meta">
+                        <span class="badge">{{ get_state_label(spot.state) }}</span>
+                        <span class="badge">{{ spot.city }}</span>
+                        <span class="badge">{{ spot.category|replace('_', ' ')|title }}</span>
+                        <span class="badge">{{ "%.1f"|format(get_average_rating(spot)) }} / 5</span>
+                    </div>
+                    <p class="muted">{{ spot.description[:140] }}{% if spot.description|length > 140 %}...{% endif %}</p>
+                    <a class="btn btn-primary" href="{{ url_for('spot_detail', spot_id=spot.id) }}">View details</a>
+                </div>
+            </article>
+        {% endfor %}
+    </section>
+{% else %}
+    <section class="empty-state">
+        <h2>No destinations found</h2>
+        <p class="muted">Try a state, city, or place name such as Goa, Jaipur, or Taj Mahal.</p>
+    </section>
+{% endif %}
+{% endblock %}

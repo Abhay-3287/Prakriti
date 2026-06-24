@@ -1,0 +1,158 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Explore | Incret India{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="eyebrow">Explore regions</div>
+        <h1>Select a state, then search district-wise from the internet.</h1>
+        <p class="muted">
+            State and union territory selection now pulls live place suggestions from the internet. You can also refine results with district-wise search suggestions from the internet.
+        </p>
+    </div>
+    <div class="panel">
+        <div class="form-row">
+            <div>
+                <label for="stateSelect">State or union territory</label>
+                <select id="stateSelect">
+                    <option value="">Select a region</option>
+                    {% for key, label in state_labels.items() %}
+                        {% if key %}
+                            <option value="{{ key }}">{{ label }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="districtInput">District-wise search</label>
+                <input id="districtInput" list="districtSuggestions" placeholder="Start typing a district name">
+                <datalist id="districtSuggestions"></datalist>
+            </div>
+        </div>
+        <div class="actions">
+            <button type="button" id="loadBtn">Fetch places from internet</button>
+        </div>
+        <p class="muted" style="margin-top: 12px;">Tip: leave district blank to fetch broader state-level results from the internet.</p>
+    </div>
+</section>
+
+<section id="resultsSection" class="card" style="display:none;">
+    <div class="eyebrow">Live internet results</div>
+    <h2 id="resultsTitle">Places</h2>
+    <p class="muted" id="resultsSummary"></p>
+    <div id="spotsGrid" class="spot-grid"></div>
+    <div id="emptyMessage" class="empty-state" style="display:none; margin-top:16px;">
+        <h3>No places found</h3>
+        <p class="muted">Try another district spelling or search the whole state instead.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const stateSelect = document.getElementById('stateSelect');
+    const districtInput = document.getElementById('districtInput');
+    const districtSuggestions = document.getElementById('districtSuggestions');
+    const loadBtn = document.getElementById('loadBtn');
+    const resultsSection = document.getElementById('resultsSection');
+    const resultsTitle = document.getElementById('resultsTitle');
+    const resultsSummary = document.getElementById('resultsSummary');
+    const spotsGrid = document.getElementById('spotsGrid');
+    const emptyMessage = document.getElementById('emptyMessage');
+
+    let districtTimer;
+
+    async function loadPlaces() {
+        const stateKey = stateSelect.value;
+        const district = districtInput.value.trim();
+        if (!stateKey) {
+            return;
+        }
+
+        const stateLabel = stateSelect.options[stateSelect.selectedIndex].text;
+        const titleText = district ? `Places in ${district}, ${stateLabel}` : `Places in ${stateLabel}`;
+        resultsSection.style.display = 'block';
+        resultsTitle.textContent = titleText;
+        resultsSummary.textContent = 'Fetching live places from the internet...';
+        spotsGrid.innerHTML = '';
+        emptyMessage.style.display = 'none';
+
+        try {
+            const response = await fetch(`/api/internet/places?state=${encodeURIComponent(stateKey)}&district=${encodeURIComponent(district)}`);
+            const data = await response.json();
+            const places = data.places || [];
+
+            if (data.error) {
+                resultsSummary.textContent = `Unable to fetch live places: ${data.error}`;
+                emptyMessage.style.display = 'block';
+                return;
+            }
+
+            resultsSummary.textContent = `${places.length} internet result${places.length === 1 ? '' : 's'} from ${data.source || 'the web'}.`;
+            if (!places.length) {
+                emptyMessage.style.display = 'block';
+                return;
+            }
+
+            spotsGrid.innerHTML = places.map((place) => `
+                <article class="spot-card">
+                    <img src="${place.image}" alt="${place.name}">
+                    <div class="spot-card-body">
+                        <h3>${place.name}</h3>
+                        <div class="meta">
+                            <span class="badge">Internet result</span>
+                            ${district ? `<span class="badge">${district}</span>` : `<span class="badge">${stateLabel}</span>`}
+                        </div>
+                        <p class="muted">${place.description}</p>
+                        ${place.url ? `<a class="btn btn-secondary" href="${place.url}" target="_blank" rel="noopener noreferrer">Open source page</a>` : ''}
+                    </div>
+                </article>
+            `).join('');
+            if (typeof bindImageFallbacks === 'function') {
+                bindImageFallbacks(spotsGrid);
+            }
+        } catch (error) {
+            resultsSummary.textContent = 'Unable to fetch live places right now.';
+            emptyMessage.style.display = 'block';
+        }
+    }
+
+    async function loadDistrictSuggestions() {
+        const stateKey = stateSelect.value;
+        const query = districtInput.value.trim();
+        districtSuggestions.innerHTML = '';
+
+        if (!stateKey || query.length < 2) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/internet/district-search?state=${encodeURIComponent(stateKey)}&q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            (data.districts || []).forEach((district) => {
+                const option = document.createElement('option');
+                option.value = district;
+                districtSuggestions.appendChild(option);
+            });
+        } catch (error) {
+            districtSuggestions.innerHTML = '';
+        }
+    }
+
+    stateSelect.addEventListener('change', () => {
+        districtInput.value = '';
+        districtSuggestions.innerHTML = '';
+        loadPlaces();
+    });
+
+    districtInput.addEventListener('input', () => {
+        clearTimeout(districtTimer);
+        districtTimer = setTimeout(loadDistrictSuggestions, 350);
+    });
+
+    districtInput.addEventListener('change', loadPlaces);
+    loadBtn.addEventListener('click', loadPlaces);
+</script>
+{% endblock %}
+

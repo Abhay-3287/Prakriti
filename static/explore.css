@@ -1,0 +1,239 @@
+/* Explore Page Styles */
+
+.states-grid {
+    display: grid;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.spot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.region-section {
+    margin-bottom: 30px;
+}
+
+.region-section h2 {
+    margin-bottom: 15px;
+    color: #34495e;
+    font-size: 1.6em;
+    text-align: left;
+}
+
+.region-search {
+    width: 100%;
+    max-width: 500px;
+    padding: 10px 14px;
+    margin-top: 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 15px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.region-search:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+.region-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    padding: 20px;
+    border: 2px dashed #dcdcdc;
+    border-radius: 12px;
+    color: #666;
+    text-align: center;
+    font-weight: 600;
+    background: #f8f9fb;
+}
+
+.match-highlight {
+    background: rgba(255, 255, 0, 0.4);
+    border-radius: 4px;
+}
+
+.region-badge {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+.state-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.state-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.state-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.state-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.results-container {
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.back-btn {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+#stateTitle {
+    text-align: center;
+    margin: 30px 0;
+    color: #2c3e50;
+    font-size: 2em;
+}
+
+.districts-container {
+    margin-bottom: 20px;
+    padding: 12px;
+    background: #f2f6ff;
+    border: 1px solid #d7e2f4;
+    border-radius: 10px;
+}
+
+.districts-container h3 {
+    margin: 0 0 10px;
+    font-size: 1.1em;
+    color: #3d5cb8;
+}
+
+.districts-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.district-chip {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #89c1ff, #6a8cff);
+    color: #fff;
+    font-size: 13px;
+}
+
+.spots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.spot-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.spot-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.spot-image-container {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.spot-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.spot-card:hover .spot-image {
+    transform: scale(1.1);
+}
+
+.spot-info {
+    padding: 20px;
+}
+
+.spot-info h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 1.3em;
+}
+
+.spot-info p {
+    margin: 0;
+    color: #7f8c8d;
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .states-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
+    
+    .state-card {
+        padding: 20px;
+    }
+    
+    .state-icon {
+        font-size: 40px;
+    }
+    
+    .spots-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    #stateTitle {
+        font-size: 1.5em;
+    }
+}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | Incret India{% endblock %}
+
+{% block content %}
+<section class="card" style="max-width: 860px;">
+    <div class="eyebrow">Profile</div>
+    <h1>Your traveler identity</h1>
+    <div class="grid two">
+        <div class="panel">
+            <h3>Account</h3>
+            <p><strong>Name:</strong> {{ current_user.name or current_user.username }}</p>
+            <p><strong>Username:</strong> {{ current_user.username }}</p>
+            <p><strong>Email:</strong> {{ current_user.email }}</p>
+        </div>
+        <div class="panel">
+            <h3>Preferences</h3>
+            <p><strong>Language:</strong> {{ current_user.language|title }}</p>
+            <p><strong>State:</strong> {{ get_state_label(current_user.state) }}</p>
+            <p><strong>Contact:</strong> {{ current_user.contact }}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
