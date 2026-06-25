@@ -16,7 +16,7 @@ from datetime import datetime
 import os
 import json
 import re
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 from dotenv import load_dotenv
@@ -99,6 +99,9 @@ PLACE_IMAGE_FALLBACK = '/static/images/travel-fallback.svg'
 NOMINATIM_API_URL = 'https://nominatim.openstreetmap.org/search'
 OSRM_ROUTE_URL = 'https://router.project-osrm.org/route/v1/driving'
 OPENAI_RESPONSES_URL = 'https://api.openai.com/v1/responses'
+DEFAULT_ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
+DEFAULT_ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@example.com')
+DEFAULT_ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin123')
 
 # Database Models
 class User(UserMixin, db.Model):
@@ -222,8 +225,41 @@ def get_average_rating(spot):
     return round(sum(ratings) / len(ratings), 1) if ratings else 0.0
 
 
+def is_safe_redirect_target(target):
+    if not target:
+        return False
+    parsed = urlsplit(target)
+    return not parsed.scheme and not parsed.netloc and target.startswith('/')
+
+
 def get_state_label(state_key):
     return STATE_LABELS.get(state_key, state_key.replace('_', ' ').title() if state_key else 'Unknown')
+
+
+def ensure_admin_user():
+    if User.query.filter_by(is_admin=True).first():
+        return
+
+    admin_user = User.query.filter(
+        (User.username == DEFAULT_ADMIN_USERNAME) | (User.email == DEFAULT_ADMIN_EMAIL)
+    ).first()
+
+    if admin_user is None:
+        admin_user = User(
+            username=DEFAULT_ADMIN_USERNAME,
+            email=DEFAULT_ADMIN_EMAIL,
+            name='Site Admin',
+            language='english',
+            state='delhi',
+            contact='admin',
+            is_admin=True
+        )
+        admin_user.set_password(DEFAULT_ADMIN_PASSWORD)
+        db.session.add(admin_user)
+    else:
+        admin_user.is_admin = True
+
+    db.session.commit()
 
 
 def fetch_json(url, params):
@@ -958,6 +994,7 @@ def inject_template_helpers():
 def init_db():
     with app.app_context():
         db.create_all()
+        ensure_admin_user()
 
         # Check if data already exists
         if TouristSpot.query.count() == 0:
@@ -1240,7 +1277,9 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('dashboard'))
+            if is_safe_redirect_target(next_page):
+                return redirect(next_page)
+            return redirect(url_for('dashboard'))
         else:
             flash('Invalid username or password', 'error')
 
