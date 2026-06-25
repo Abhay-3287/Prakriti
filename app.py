@@ -1499,3 +1499,7 @@ def internal_error(error):
 if __name__ == '__main__':
     init_db()
     app.run()
+
+@app.route('/debug-db')
+def debug_db():
+    return app.config['SQLALCHEMY_DATABASE_URI']
