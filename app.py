@@ -1496,10 +1496,13 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-if __name__ == '__main__':
+# Initialize database for both local and Render
+with app.app_context():
     init_db()
-    app.run()
 
 @app.route('/debug-db')
 def debug_db():
     return app.config['SQLALCHEMY_DATABASE_URI']
+
+if __name__ == '__main__':
+    app.run()
